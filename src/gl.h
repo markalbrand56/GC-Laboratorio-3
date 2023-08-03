@@ -5,6 +5,7 @@
 #include <array>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 
 // Define a Color struct to hold the RGB values of a pixel
