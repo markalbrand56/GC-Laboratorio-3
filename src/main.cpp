@@ -28,6 +28,12 @@ int main(int argc, char** argv) {
     }
 
     bool running = true;
+    // Apply rotation
+    const auto pi = glm::pi<float>();
+    float angleZ = pi;
+    float angleX = 0;
+    float angleY = pi/2;
+
     while (running) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -37,6 +43,9 @@ int main(int argc, char** argv) {
         }
 
         clear();
+
+        angleY += 0.001f;
+
         for (const auto& face : faces) {
             glm::vec3 A = vertices[face.vertexIndices[0][0] - 1];
             glm::vec3 B = vertices[face.vertexIndices[1][0] - 1];
@@ -47,12 +56,6 @@ int main(int argc, char** argv) {
             A *= size;
             B *= size;
             C *= size;
-
-            // Apply rotation
-            const auto pi = glm::pi<float>();
-            const float angleZ = pi;
-            const float angleX = 0;
-            const float angleY = pi/2;
 
             A = glm::rotateZ(A, angleZ);
             B = glm::rotateZ(B, angleZ);
