@@ -2,7 +2,7 @@
 ## SR 1: Carga de modelos
 
 ### Modelo base
-![Modelo base](https://github.com/markalbrand56/GC-Laboratorio-3/blob/master/model/quinjet.png)
+![Modelo base](https://github.com/markalbrand56/GC-Laboratorio-3/blob/master/model/quinjet_base.png)
 
 ### Modelo renderizado
 ![Modelo renderizado1](https://github.com/markalbrand56/GC-Laboratorio-3/blob/master/model/render.png)
