@@ -49,22 +49,22 @@ int main(int argc, char** argv) {
             C *= size;
 
             // Apply rotation
-            const float angle = glm::pi<float>();
-//            A = glm::rotate(A, angle, glm::vec3(0.0f, 0.0f, 1.0f));
-//            B = glm::rotate(B, angle, glm::vec3(0.0f, 0.0f, 1.0f));
-//            C = glm::rotate(C, angle, glm::vec3(0.0f, 0.0f, 1.0f));
+            const auto pi = glm::pi<float>();
+            const float angleZ = pi;
+            const float angleX = 0;
+            const float angleY = pi/2;
 
-            A = glm::rotateZ(A, angle);
-            B = glm::rotateZ(B, angle);
-            C = glm::rotateZ(C, angle);
+            A = glm::rotateZ(A, angleZ);
+            B = glm::rotateZ(B, angleZ);
+            C = glm::rotateZ(C, angleZ);
 
-            A = glm::rotateX(A, angle/4);
-            B = glm::rotateX(B, angle/4);
-            C = glm::rotateX(C, angle/4);
-
-            A = glm::rotateY(A, angle/16);
-            B = glm::rotateY(B, angle/16);
-            C = glm::rotateY(C, angle/16);
+            A = glm::rotateX(A, angleX/4);
+            B = glm::rotateX(B, angleX/4);
+            C = glm::rotateX(C, angleX/4);
+//
+            A = glm::rotateY(A, angleY);
+            B = glm::rotateY(B, angleY);
+            C = glm::rotateY(C, angleY);
 
             // Ajustar a escala
             A.x += 320.0f;
