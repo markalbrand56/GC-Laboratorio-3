@@ -13,6 +13,7 @@ link_directories(${SDL2_LIB_DIR})
 
 add_executable(Laboratorio_3 src/main.cpp
         src/fragment.h
-        src/color.h)
+        src/color.h
+        src/uniforms.h)
 
 target_link_libraries(${PROJECT_NAME} SDL2main SDL2 glm::glm)
