@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
             glm::vec3 B = vertices[face.vertexIndices[1][0] - 1];
             glm::vec3 C = vertices[face.vertexIndices[2][0] - 1];
 
-            const float size = 50.0f;
+            const float size = 65.0f;
 
             A *= size;
             B *= size;
