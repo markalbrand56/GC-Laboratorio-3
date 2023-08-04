@@ -27,13 +27,13 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    bool running = true;
-    // Apply rotation
+    // Variables to control the rotation of the model
     const auto pi = glm::pi<float>();
     float angleZ = pi;
     float angleX = 0;
     float angleY = pi/2;
 
+    bool running = true;
     while (running) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
 
         clear();
 
-        angleY += 0.001f;
+        angleY += 0.001f;  // Rotate the model around the Y axis continuously
 
         for (const auto& face : faces) {
             glm::vec3 A = vertices[face.vertexIndices[0][0] - 1];
