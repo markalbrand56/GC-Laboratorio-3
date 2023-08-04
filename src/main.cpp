@@ -3,15 +3,54 @@
 #include "gl.h"
 #include <glm/gtc/matrix_transform.hpp> // Include the matrix transformation functions from GLM
 #include <glm/gtx/rotate_vector.hpp> // Include the rotate_vector function from GLM
+#include "fragment.h"
+#include "uniforms.h"
 
-void render() {
-    std::vector<glm::vec3> vertices = {
-            glm::vec3(320.0f, 240.0f, 0.0f),
-            glm::vec3(220.0f, 140.0f, 0.0f),
-            glm::vec3(420.0f, 140.0f, 0.0f)
-    };
+// Variables to control the rotation of the model
+const auto pi = glm::pi<float>();
+float angleZ = pi;
+float angleX = 0;
+float angleY = pi/2;
 
-    triangle(vertices[0], vertices[1], vertices[2]);
+void render(const Uniforms& uniforms, const std::vector<glm::vec3>& vertices, const std::vector<Face>& faces) {
+    // Clear the framebuffer
+    clear();
+
+    // Draw the model
+
+    for (const auto& face : faces) {
+        glm::vec3 A = vertices[face.vertexIndices[0][0] - 1];
+        glm::vec3 B = vertices[face.vertexIndices[1][0] - 1];
+        glm::vec3 C = vertices[face.vertexIndices[2][0] - 1];
+
+        const float size = 65.0f;
+
+        A *= size;
+        B *= size;
+        C *= size;
+
+        A = glm::rotateZ(A, angleZ);
+        B = glm::rotateZ(B, angleZ);
+        C = glm::rotateZ(C, angleZ);
+
+        A = glm::rotateX(A, angleX/4);
+        B = glm::rotateX(B, angleX/4);
+        C = glm::rotateX(C, angleX/4);
+//
+        A = glm::rotateY(A, angleY);
+        B = glm::rotateY(B, angleY);
+        C = glm::rotateY(C, angleY);
+
+        // Ajustar a escala
+        A.x += 320.0f;
+        A.y += 240.0f;
+        B.x += 320.0f;
+        B.y += 240.0f;
+        C.x += 320.0f;
+        C.y += 240.0f;
+
+        triangle(A, B, C);
+    }
 }
 
 int main(int argc, char** argv) {
@@ -27,11 +66,15 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    // Variables to control the rotation of the model
-    const auto pi = glm::pi<float>();
-    float angleZ = pi;
-    float angleX = 0;
-    float angleY = pi/2;
+    Uniforms uniforms;
+
+    glm::mat4 model = glm::mat4(1);
+    glm::mat4 view = glm::mat4(1);
+    glm::mat4 projection = glm::mat4(1);
+
+    uniforms.model = model;
+    uniforms.model = view;
+    uniforms.model = projection;
 
     bool running = true;
     while (running) {
@@ -42,46 +85,12 @@ int main(int argc, char** argv) {
             }
         }
 
-        clear();
+        SDL_RenderPresent(renderer);
 
         angleY += 0.001f;  // Rotate the model around the Y axis continuously
+        std::cout << "angleY: " << angleY << std::endl;
 
-        for (const auto& face : faces) {
-            glm::vec3 A = vertices[face.vertexIndices[0][0] - 1];
-            glm::vec3 B = vertices[face.vertexIndices[1][0] - 1];
-            glm::vec3 C = vertices[face.vertexIndices[2][0] - 1];
-
-            const float size = 65.0f;
-
-            A *= size;
-            B *= size;
-            C *= size;
-
-            A = glm::rotateZ(A, angleZ);
-            B = glm::rotateZ(B, angleZ);
-            C = glm::rotateZ(C, angleZ);
-
-            A = glm::rotateX(A, angleX/4);
-            B = glm::rotateX(B, angleX/4);
-            C = glm::rotateX(C, angleX/4);
-//
-            A = glm::rotateY(A, angleY);
-            B = glm::rotateY(B, angleY);
-            C = glm::rotateY(C, angleY);
-
-            // Ajustar a escala
-            A.x += 320.0f;
-            A.y += 240.0f;
-            B.x += 320.0f;
-            B.y += 240.0f;
-            C.x += 320.0f;
-            C.y += 240.0f;
-
-
-            triangle(A, B, C);
-        }
-
-        SDL_RenderPresent(renderer);
+        render(uniforms, vertices, faces);
     }
 
     SDL_DestroyRenderer(renderer);

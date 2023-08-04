@@ -6,15 +6,8 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include "color.h"
 
-
-// Define a Color struct to hold the RGB values of a pixel
-struct Color {
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-    uint8_t a;
-};
 
 struct Face {
     std::vector<std::array<int, 3>> vertexIndices;
