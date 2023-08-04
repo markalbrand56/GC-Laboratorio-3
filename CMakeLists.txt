@@ -12,6 +12,7 @@ include_directories(${SDL2_INCLUDE_DIR})
 link_directories(${SDL2_LIB_DIR})
 
 add_executable(Laboratorio_3 src/main.cpp
-        src/fragment.h)
+        src/fragment.h
+        src/color.h)
 
 target_link_libraries(${PROJECT_NAME} SDL2main SDL2 glm::glm)
