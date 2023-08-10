@@ -1,3 +1,4 @@
+// gl.h
 #pragma once
 #include <glm/glm.hpp>
 #include <vector>
@@ -7,6 +8,7 @@
 #include <sstream>
 #include <algorithm>
 #include "color.h"
+#include "fragment.h"
 
 
 struct Face {
@@ -70,11 +72,27 @@ void line(glm::vec3 start, glm::vec3 end) {
     }
 }
 
-void triangle(const glm::vec3& A, const glm::vec3& B, const glm::vec3& C) {
-    line(A, B);
-    line(B, C);
-    line(C, A);
+std::vector<Fragment> triangle(const glm::vec3& A, const glm::vec3& B, const glm::vec3& C) {
+    std::vector<Fragment> fragments;
+
+    // Define the edges of the triangle
+    std::vector<std::pair<glm::vec3, glm::vec3>> edges = {
+            {A, B},
+            {B, C},
+            {C, A}
+    };
+
+    // Generate fragments along each edge using the line function
+    for (const auto& edge : edges) {
+        const glm::vec3& start = edge.first;
+        const glm::vec3& end = edge.second;
+
+        line(start, end); // Use your line function here to draw the edge
+    }
+
+    return fragments;
 }
+
 
 bool loadOBJ(const std::string& path, std::vector<glm::vec3>& out_vertices, std::vector<Face>& out_faces) {
     // Open the OBJ file
