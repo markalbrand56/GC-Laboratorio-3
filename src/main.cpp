@@ -6,23 +6,43 @@
 #include "shaders.h"
 
 void render(const Uniforms& uniforms, const std::vector<glm::vec3>& vertices, const std::vector<Face>& faces) {
-    clear();
+    // 1. Vertex Shader
+    // vertex -> trasnformedVertices
 
     std::vector<glm::vec3> transformedVertices;
-    for (const auto& vertex : vertices) {
-        transformedVertices.push_back(vertexShader(vertex, uniforms));
+    for(glm::vec3 vertex : vertices) {
+        glm::vec3 transformedVertex = vertexShader(vertex, uniforms);
+        transformedVertices.push_back(transformedVertex);
     }
 
-    std::vector<std::vector<glm::vec3>> assembledVertices = primitiveAssembly(transformedVertices);
+    // 2. Primitive Assembly
+    // transformedVertices -> triangles
+    std::vector<std::vector<glm::vec3>> triangles = primitiveAssembly(transformedVertices);
 
-    std::vector<Fragment> fragments = rasterize(assembledVertices);
+    // 3. Rasterize
+    // triangles -> Fragments
+    std::vector<Fragment> fragments;
+    for (const std::vector<glm::vec3>& triangleVertices : triangles) {
+        std::vector<Fragment> rasterizedTriangle = triangle(
+                triangleVertices[0],
+                triangleVertices[1],
+                triangleVertices[2]
+        );
 
-    for (const auto& fragment : fragments) {
+        fragments.insert(
+                fragments.end(),
+                rasterizedTriangle.begin(),
+                rasterizedTriangle.end()
+        );
+    }
+
+    // 4. Fragment Shader
+    // Fragments -> colors
+
+    for (Fragment fragment : fragments) {
         Color fragColor = fragmentShader(fragment);
-        point(glm::vec3(fragment.position.x, fragment.position.y, 0.0f)); // Draw the pixel
+        point(fragment.position.x, fragment.position.y, fragColor);
     }
-
-    SDL_RenderPresent(renderer);
 }
 
 int main(int argc, char** argv) {
@@ -38,18 +58,7 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    // Set up camera
-    Camera camera;
-    camera.cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
-    camera.targetPosition = glm::vec3(0.0f, 0.0f, 0.0f);
-    camera.upVector = glm::vec3(0.0f, 1.0f, 0.0f);
 
-    // Create uniforms
-    Uniforms uniforms;
-    uniforms.model = createModelMatrix(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f));
-    uniforms.view = createViewMatrix(camera);
-    uniforms.projection = createProjectionMatrix();
-    uniforms.viewport = createViewportMatrix();
 
     bool running = true;
     while (running) {
@@ -60,7 +69,23 @@ int main(int argc, char** argv) {
             }
         }
 
+        // Create uniforms
+        Uniforms uniforms;
+        uniforms.model = createModelMatrix();
+        uniforms.view = createViewMatrix();
+        uniforms.projection = createProjectionMatrix();
+        uniforms.viewport = createViewportMatrix();
+
+        clear();
+
+        // Render
         render(uniforms, vertices, faces);
+
+        // Present the frame buffer to the screen
+        SDL_RenderPresent(renderer);
+
+        // Delay to limit the frame rate
+        SDL_Delay(1000 / 60);
     }
 
     SDL_DestroyRenderer(renderer);

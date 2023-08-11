@@ -42,55 +42,66 @@ void clear() {
 }
 
 // Function to set a specific pixel in the framebuffer to the currentColor
-void point(const glm::vec3& vertex) {
-    SDL_SetRenderDrawColor(renderer, currentColor.r, currentColor.g, currentColor.b, currentColor.a);
-//    SDL_RenderDrawPoint(renderer, x, y);
-    SDL_RenderDrawPoint(renderer, static_cast<int>(vertex.x), static_cast<int>(vertex.y));
+void point(int x, int y, Color color) {
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+    SDL_RenderDrawPoint(renderer, x, y);
 }
 
-void line(glm::vec3 start, glm::vec3 end) {
-    int x1 = round(start.x), y1 = round(start.y);
-    int x2 = round(end.x), y2 = round(end.y);
+std::vector<Fragment> line(glm::vec3 A, glm::vec3 B) {
+    int x1 = A.x;
+    int y1 = A.y;
+    int x2 = B.x;
+    int y2 = B.y;
+    int dx = abs(x2 - x1), sx = x1 < x2 ? 1 : -1;
+    int dy = -abs(y2 - y1), sy = y1 < y2 ? 1 : -1;
+    int err = dx + dy, e2; /* error value e_xy */
 
-    // Draw a line between (x1, y1) and (x2, y2) using point. Bresenham's line algorithm
-    int dx = abs(x2 - x1), dy = abs(y2 - y1);
-    int sx = (x1 < x2) ? 1 : -1, sy = (y1 < y2) ? 1 : -1;
-    int err = dx - dy;
 
-    while (true) {
-        point(glm::vec3(x1, y1, 0.0f));
+    std::vector<Fragment> lineFragments;
+
+    while (true) { /* loop */
+        lineFragments.push_back(Fragment{glm::ivec2(x1, y1)});
         if (x1 == x2 && y1 == y2) break;
-        int e2 = 2 * err;
-        if (e2 > -dy) {
-            err -= dy;
+        e2 = 2 * err;
+        if (e2 >= dy) { /* e_xy + e_x > 0 */
+            err += dy;
             x1 += sx;
         }
-        if (e2 < dx) {
+        if (e2 <= dx) { /* e_xy + e_y < 0 */
             err += dx;
             y1 += sy;
         }
     }
+
+    return lineFragments;
 }
 
-std::vector<Fragment> triangle(const glm::vec3& A, const glm::vec3& B, const glm::vec3& C) {
-    std::vector<Fragment> fragments;
+std::vector<Fragment> triangle(glm::vec3 A, glm::vec3 B, glm::vec3 C) {
+    std::vector<Fragment> triangleFragments;
 
-    // Define the edges of the triangle
-    std::vector<std::pair<glm::vec3, glm::vec3>> edges = {
-            {A, B},
-            {B, C},
-            {C, A}
-    };
+    std::vector<Fragment> line1 = line(A, B);
+    std::vector<Fragment> line2 = line(B, C);
+    std::vector<Fragment> line3 = line(C, A);
 
-    // Generate fragments along each edge using the line function
-    for (const auto& edge : edges) {
-        const glm::vec3& start = edge.first;
-        const glm::vec3& end = edge.second;
+    triangleFragments.insert(
+            triangleFragments.end(),
+            line1.begin(),
+            line1.end()
+    );
 
-        line(start, end); // Use your line function here to draw the edge
-    }
+    triangleFragments.insert(
+            triangleFragments.end(),
+            line2.begin(),
+            line2.end()
+    );
 
-    return fragments;
+    triangleFragments.insert(
+            triangleFragments.end(),
+            line3.begin(),
+            line3.end()
+    );
+
+    return triangleFragments;
 }
 
 

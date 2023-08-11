@@ -7,22 +7,19 @@
 #include "uniforms.h"
 #include "gl.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <cmath>
+#include <random>
 
 
-glm::vec3 vertexShader(const glm::vec3& vertex, const Uniforms& uniforms) {
-    // Apply transformations to the input vertex using the matrices from the uniforms
-    glm::vec4 clipSpaceVertex = uniforms.projection * uniforms.view * uniforms.model * glm::vec4(vertex, 1.0f);
-
-    // Perspective divide
-    glm::vec3 ndcVertex = glm::vec3(clipSpaceVertex) / clipSpaceVertex.w;
+glm::vec3 vertexShader(const glm::vec3& vertex, const Uniforms& u) {
+    glm::vec4 v = glm::vec4(vertex.x, vertex.y, vertex.z, 1);
 
 
-    // Apply the viewport transform
-    glm::vec4 screenVertex = uniforms.viewport * glm::vec4(ndcVertex, 1.0f);
+    glm::vec4 r =  u.viewport * u.projection * u.view * u.model * v;
 
-    // Return the transformed vertex as a vec3
-    return glm::vec3(screenVertex);
-}
+
+    return glm::vec3(r.x/r.w, r.y/r.w, r.z/r.w);
+};
 
 std::vector<std::vector<glm::vec3>> primitiveAssembly (
     const std::vector<glm::vec3>& transformedVertices
@@ -54,32 +51,38 @@ std::vector<Fragment> rasterize(const std::vector<std::vector<glm::vec3>>& assem
     return fragments;
 }
 
-Color fragmentShader(const Fragment& fragment) {
-    // Example: Assign a constant color to each fragment
-    Color fragColor(255, 0, 0, 255); // Red color with full opacity
+Color fragmentShader(Fragment fragment) {
+    // Initialize a random number generator
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, 255);
 
-    // You can modify this function to implement more complex shading
-    // based on the fragment's attributes (e.g., depth, interpolated normals, texture coordinates, etc.)
+    // Generate random values for the red, green, and blue channels
+    int red = dis(gen);
+    int green = dis(gen);
+    int blue = dis(gen);
 
-    return fragColor;
+    return Color{red, green, blue};
+};
+
+glm::mat4 createModelMatrix() {
+    return glm::mat4(1);
 }
 
-glm::mat4 createModelMatrix(const glm::vec3& translation, const glm::vec3& rotation, const glm::vec3& scale) {
-    glm::mat4 modelMatrix = glm::mat4(1.0f);
-
-    // Aplicar transformaciones a la matriz de modelo
-    modelMatrix = glm::translate(modelMatrix, translation);
-    modelMatrix = glm::rotate(modelMatrix, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)); // Rotación en X
-    modelMatrix = glm::rotate(modelMatrix, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación en Y
-    modelMatrix = glm::rotate(modelMatrix, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)); // Rotación en Z
-    modelMatrix = glm::scale(modelMatrix, scale);
-
-    return modelMatrix;
+glm::mat4 createViewMatrix() {
+    return glm::lookAt(
+            // donde esta
+            glm::vec3(0, 0, -5),
+            // hacia adonde mira
+            glm::vec3(0, 0, 0),
+            // arriba
+            glm::vec3(0, 1, 0)
+    );
 }
 
 glm::mat4 createProjectionMatrix() {
     float fovInDegrees = 45.0f;
-    float aspectRatio = static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT);
+    float aspectRatio = SCREEN_WIDTH / SCREEN_HEIGHT;
     float nearClip = 0.1f;
     float farClip = 100.0f;
 
