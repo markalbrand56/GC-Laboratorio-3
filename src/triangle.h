@@ -33,28 +33,31 @@ std::vector<Fragment> triangle(const Vertex& a, const Vertex& b, const Vertex& c
 
     std::vector<Fragment> fragments;
     // Iterate over each point in the bounding box
-    for (float y = minY; y <= maxY; ++y) {
-        for (float x = minX; x <= maxX; ++x) {
-            // Calculate barycentric coordinates for the point
+    for (int x = minX; x <= maxX; x++) {
+        for (int y = minY; y <= maxY; y++) {
             glm::vec3 P = glm::vec3(x, y, 0);
-            glm::vec3 barycentric = barycentricCoordinates(P, a.position, b.position, c.position);
 
-            // If the point's barycentric coordinates are all between 0 and 1, it lies within the triangle
-            if (
-                    barycentric.x >= 0 && barycentric.x <= 1 &&
-                    barycentric.y >= 0 && barycentric.y <= 1 &&
-                    barycentric.z >= 0 && barycentric.z <= 1)
-            {
-                // Interpolate the point's color using its barycentric coordinates
-                Color color = a.color * barycentric.x + b.color * barycentric.y + c.color * barycentric.z;
-//                std::cout << color.r << " " << color.g << " " << color.b << std::endl;
+            // Calculate the barycentric coordinates
+            glm::vec3 barycentric = barycentricCoordinates(P, A, B, C);
 
-                P.z = barycentric.x * a.position.z + barycentric.y * b.position.z + barycentric.z * c.position.z;
+            // If the point is inside the triangle
+            if (barycentric.x >= 0 && barycentric.y >= 0 && barycentric.z >= 0) {
+                // Calculate the depth
+                float z = A.z * barycentric.x + B.z * barycentric.y + C.z * barycentric.z;
 
-                float intensity = glm::dot(normal, glm::normalize(lightPos - P));
+                // Calculate the intensity
+                glm::vec3 lightDir = glm::normalize(lightPos - P);
+                float intensity = glm::dot(normal, lightDir);
 
-                // Add the point to the fragment list
-                fragments.push_back(Fragment{P, color, intensity});
+                // Create the fragment
+                Fragment fragment = Fragment{
+                        glm::vec3(x, y, z),
+                        a.color * barycentric.x + b.color * barycentric.y + c.color * barycentric.z,
+                        intensity
+                };
+
+                // Add the fragment to the list
+                fragments.push_back(fragment);
             }
         }
     }
