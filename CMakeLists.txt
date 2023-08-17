@@ -16,6 +16,7 @@ add_executable(Laboratorio_3 src/main.cpp
         src/color.h
         src/uniforms.h
         src/shaders.h
-        src/camera.h)
+        src/camera.h
+        src/object.h)
 
 target_link_libraries(${PROJECT_NAME} SDL2main SDL2 glm::glm)

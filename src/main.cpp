@@ -1,28 +1,39 @@
-#include <iostream>
 #include <SDL.h>
 #include "gl.h"
 #include "camera.h"
 #include "uniforms.h"
 #include "shaders.h"
+#include "object.h"
 
-void render(const Uniforms& uniforms, const std::vector<glm::vec3>& vertices, const std::vector<Face>& faces) {
+Uniforms uniform;
+
+void render(const std::vector<glm::vec3>& vertices) {
     // 1. Vertex Shader
     // vertex -> trasnformedVertices
 
-    std::vector<glm::vec3> transformedVertices;
-    for(glm::vec3 vertex : vertices) {
-        glm::vec3 transformedVertex = vertexShader(vertex, uniforms);
+    std::vector<Vertex> transformedVertices;
+
+    for (int i = 0; i < vertices.size(); i+=2) {
+        glm::vec3 v = vertices[i];
+        glm::vec3 c = vertices[i + 1];
+
+        Vertex vertex = Vertex{v, Color(c.x, c.y, c.z)};
+
+        Vertex transformedVertex = vertexShader(vertex, uniform);
         transformedVertices.push_back(transformedVertex);
     }
 
+    std::cout << "transformedVertices: " << transformedVertices.size() << std::endl;
+
     // 2. Primitive Assembly
     // transformedVertices -> triangles
-    std::vector<std::vector<glm::vec3>> triangles = primitiveAssembly(transformedVertices);
+    std::vector<std::vector<Vertex>> triangles = primitiveAssembly(transformedVertices);
+    std::cout << "groupedVertices: " << triangles.size() << std::endl;
 
     // 3. Rasterize
     // triangles -> Fragments
     std::vector<Fragment> fragments;
-    for (const std::vector<glm::vec3>& triangleVertices : triangles) {
+    for (const std::vector<Vertex>& triangleVertices : triangles) {
         std::vector<Fragment> rasterizedTriangle = triangle(
                 triangleVertices[0],
                 triangleVertices[1],
@@ -48,17 +59,15 @@ void render(const Uniforms& uniforms, const std::vector<glm::vec3>& vertices, co
 int main(int argc, char** argv) {
     init();
 
-    std::vector<glm::vec3> vertices;
-    std::vector<Face> faces;
+    std::vector<glm::vec3> vertexBufferObject = {
+            {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f},
+            {-0.87f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f},
+            {0.87f,  -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f},
 
-    // Load the OBJ file
-    bool success = loadOBJ("../model/quinjet.obj", vertices, faces);
-    if (!success) {
-        std::cerr << "Error loading OBJ file!" << std::endl;
-        return 1;
-    }
-
-
+            {0.0f, 1.0f,    -1.0f}, {0.0f, 1.0f, 0.0f},
+            {-0.87f, -0.5f, -1.0f}, {0.0f, 1.0f, 0.0f},
+            {0.87f,  -0.5f, -1.0f}, {0.0f, 1.0f, 0.0f}
+    };
 
     bool running = true;
     while (running) {
@@ -69,17 +78,22 @@ int main(int argc, char** argv) {
             }
         }
 
-        // Create uniforms
-        Uniforms uniforms;
-        uniforms.model = createModelMatrix();
-        uniforms.view = createViewMatrix();
-        uniforms.projection = createProjectionMatrix();
-        uniforms.viewport = createViewportMatrix();
+        // Camera
+        Camera camera;
+        camera.cameraPosition = glm::vec3(0.0f, 0.0f, -15.0f);
+        camera.targetPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+        camera.upVector = glm::vec3(0.0f, 1.0f, 0.0f);
+
+        // Create uniform
+        uniform.model = createModelMatrix();
+        uniform.view = createViewMatrix(camera);
+        uniform.projection = createProjectionMatrix();
+        uniform.viewport = createViewportMatrix();
 
         clear();
 
         // Render
-        render(uniforms, vertices, faces);
+        render(vertexBufferObject);
 
         // Present the frame buffer to the screen
         SDL_RenderPresent(renderer);
