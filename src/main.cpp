@@ -56,18 +56,46 @@ void render(const std::vector<glm::vec3>& vertices) {
     }
 }
 
+std::vector<glm::vec3> setupVertexFromObject(const std::vector<glm::vec3>& vertices, const std::vector<Face>& faces){
+    std::vector<glm::vec3> vertexBufferObject;
+
+    for (const Face& face : faces) {
+        for (const std::array<int, 3>& vertexIndices : face.vertexIndices) {
+            glm::vec3 vertex = vertices[vertexIndices[0] - 1];
+            glm::vec3 color = glm::vec3(1.0f, 0.0f, 0.0f);
+
+            vertexBufferObject.push_back(vertex);
+            vertexBufferObject.push_back(color);
+        }
+    }
+
+    return vertexBufferObject;
+}
+
 int main(int argc, char** argv) {
     init();
 
-    std::vector<glm::vec3> vertexBufferObject = {
-            {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f},
-            {-0.87f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f},
-            {0.87f,  -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f},
+    std::vector<glm::vec3> vertices;
+    std::vector<Face> faces;
 
-            {0.0f, 1.0f,    -1.0f}, {0.0f, 1.0f, 0.0f},
-            {-0.87f, -0.5f, -1.0f}, {0.0f, 1.0f, 0.0f},
-            {0.87f,  -0.5f, -1.0f}, {0.0f, 1.0f, 0.0f}
-    };
+    // Load the OBJ file
+    bool success = loadOBJ("../model/quinjet.obj", vertices, faces);
+    if (!success) {
+        std::cerr << "Error loading OBJ file!" << std::endl;
+        return 1;
+    }
+
+    std::vector<glm::vec3> vertexBufferObject = setupVertexFromObject(vertices, faces);
+
+//    std::vector<glm::vec3> vertexBufferObject = {
+//            {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f},
+//            {-0.87f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f},
+//            {0.87f,  -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f},
+//
+//            {0.0f, 1.0f,    -1.0f}, {0.0f, 1.0f, 0.0f},
+//            {-0.87f, -0.5f, -1.0f}, {0.0f, 1.0f, 0.0f},
+//            {0.87f,  -0.5f, -1.0f}, {0.0f, 1.0f, 0.0f}
+//    };
 
     bool running = true;
     while (running) {
@@ -82,7 +110,7 @@ int main(int argc, char** argv) {
         Camera camera;
         camera.cameraPosition = glm::vec3(0.0f, 0.0f, -15.0f);
         camera.targetPosition = glm::vec3(0.0f, 0.0f, 0.0f);
-        camera.upVector = glm::vec3(0.0f, 1.0f, 0.0f);
+        camera.upVector = glm::vec3(0.0f, -1.0f, 0.0f);  // Mira hacia abajo porque el modelo está al revés
 
         // Create uniform
         uniform.model = createModelMatrix();
