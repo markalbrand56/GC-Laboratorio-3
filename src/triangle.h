@@ -1,38 +1,6 @@
 #pragma once
 #include "gl.h"
 
-//std::vector<Fragment> triangle(Vertex a, Vertex b, Vertex c) {
-//    glm::vec3 A = a.position;
-//    glm::vec3 B = b.position;
-//    glm::vec3 C = c.position;
-//
-//    std::vector<Fragment> triangleFragments;
-//
-//    std::vector<Fragment> line1 = line(a, b);
-//    std::vector<Fragment> line2 = line(b, c);
-//    std::vector<Fragment> line3 = line(c, a);
-//
-//    triangleFragments.insert(
-//            triangleFragments.end(),
-//            line1.begin(),
-//            line1.end()
-//    );
-//
-//    triangleFragments.insert(
-//            triangleFragments.end(),
-//            line2.begin(),
-//            line2.end()
-//    );
-//
-//    triangleFragments.insert(
-//            triangleFragments.end(),
-//            line3.begin(),
-//            line3.end()
-//    );
-//
-//    return triangleFragments;
-//}
-
 glm::vec3 barycentricCoordinates(const glm::vec3& P, const glm::vec3& A, const glm::vec3& B, const glm::vec3& C) {
     glm::vec3 s[2];
     for (int i = 0; i < 2; i++) {
