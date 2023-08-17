@@ -6,7 +6,6 @@
 struct Fragment {
     glm::vec3 position; // X and Y coordinates of the pixel (in screen space)
     Color color;
-    float z;
 };
 
 struct Vertex {
