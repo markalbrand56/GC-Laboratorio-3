@@ -7,6 +7,7 @@
 #include "triangle.h"
 
 Uniforms uniform;
+Camera camera;
 
 void render(const std::vector<glm::vec3>& vertices) {
     // 1. Vertex Shader
@@ -18,7 +19,7 @@ void render(const std::vector<glm::vec3>& vertices) {
         glm::vec3 v = vertices[i];
         glm::vec3 c = vertices[i + 1];
 
-        Vertex vertex = Vertex{v, Color(c.x, c.y, c.z)};
+        Vertex vertex = {v, Color(c.x, c.y, c.z)};
 
         Vertex transformedVertex = vertexShader(vertex, uniform);
         transformedVertices.push_back(transformedVertex);
@@ -104,7 +105,6 @@ int main(int argc, char** argv) {
         }
 
         // Camera
-        Camera camera;
         camera.cameraPosition = glm::vec3(0.0f, 0.0f, -15.0f);
         camera.targetPosition = glm::vec3(0.0f, 0.0f, 0.0f);
         camera.upVector = glm::vec3(0.0f, -1.0f, 0.0f);  // Mira hacia abajo porque el modelo está al revés

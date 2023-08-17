@@ -12,9 +12,9 @@ glm::vec3 barycentricCoordinates(const glm::vec3& P, const glm::vec3& A, const g
     }
     glm::vec3 u = glm::cross(s[0], s[1]);
     if (std::abs(u[2]) > 1e-2) {
-        return glm::vec3(1.f - (u.x + u.y) / u.z, u.y / u.z, u.x / u.z);
+        return {1.f - (u.x + u.y) / u.z, u.y / u.z, u.x / u.z};
     }
-    return glm::vec3(-1, 1, 1);
+    return {-1, 1, 1};
 }
 
 std::vector<Fragment> triangle(const Vertex& a, const Vertex& b, const Vertex& c) {
