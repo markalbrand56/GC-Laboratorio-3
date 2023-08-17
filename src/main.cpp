@@ -23,12 +23,9 @@ void render(const std::vector<glm::vec3>& vertices) {
         transformedVertices.push_back(transformedVertex);
     }
 
-    std::cout << "transformedVertices: " << transformedVertices.size() << std::endl;
-
     // 2. Primitive Assembly
     // transformedVertices -> triangles
     std::vector<std::vector<Vertex>> triangles = primitiveAssembly(transformedVertices);
-    std::cout << "groupedVertices: " << triangles.size() << std::endl;
 
     // 3. Rasterize
     // triangles -> Fragments
