@@ -4,10 +4,10 @@
 #include <iostream>
 
 struct Color {
-    Uint8 r;
-    Uint8 g;
-    Uint8 b;
-    Uint8 a;
+    int r;
+    int g;
+    int b;
+    int a;
 
     Color() : r(0), g(0), b(0), a(255) {}
 

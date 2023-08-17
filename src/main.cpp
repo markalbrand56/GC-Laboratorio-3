@@ -4,6 +4,7 @@
 #include "uniforms.h"
 #include "shaders.h"
 #include "object.h"
+#include "triangle.h"
 
 Uniforms uniform;
 
@@ -49,7 +50,7 @@ void render(const std::vector<glm::vec3>& vertices) {
 
     for (Fragment fragment : fragments) {
         Color fragColor = fragmentShader(fragment);
-        point(fragment.position.x, fragment.position.y, fragColor);
+        point(fragment);
     }
 }
 
@@ -83,6 +84,16 @@ int main(int argc, char** argv) {
     }
 
     std::vector<glm::vec3> vertexBufferObject = setupVertexFromObject(vertices, faces);
+
+//    std::vector<glm::vec3> vertexBufferObject = {
+//            {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f},
+//            {-0.87f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f},
+//            {0.87f,  -0.5f, 0.0f}, {0.0f, 0.0f, 1.0f},
+//
+//            {0.0f, 1.0f,    -1.0f}, {1.0f, 1.0f, 0.0f},
+//            {-0.87f, -0.5f, -1.0f}, {0.0f, 1.0f, 1.0f},
+//            {0.87f,  -0.5f, -1.0f}, {1.0f, 0.0f, 1.0f}
+//    };
 
     bool running = true;
     while (running) {
