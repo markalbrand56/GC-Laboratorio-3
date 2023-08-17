@@ -1,7 +1,7 @@
 #pragma once
 #include "gl.h"
 
-glm::vec3 lightPos = glm::vec3(0, 0, 150.0f);
+glm::vec3 lightPos = glm::vec3(150.0f, 150.0f, 150.0f);
 
 glm::vec3 barycentricCoordinates(const glm::vec3& P, const glm::vec3& A, const glm::vec3& B, const glm::vec3& C) {
     glm::vec3 s[2];
