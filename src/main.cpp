@@ -60,7 +60,7 @@ std::vector<glm::vec3> setupVertexFromObject(const std::vector<glm::vec3>& verti
     for (const Face& face : faces) {
         for (const std::array<int, 3>& vertexIndices : face.vertexIndices) {
             glm::vec3 vertex = vertices[vertexIndices[0] - 1];
-            glm::vec3 color = glm::vec3(1.0f, 0.0f, 0.0f);
+            glm::vec3 color = glm::vec3(0.8f, 0.8f, 0.8f);
 
             vertexBufferObject.push_back(vertex);
             vertexBufferObject.push_back(color);
@@ -105,7 +105,7 @@ int main(int argc, char** argv) {
         }
 
         // Camera
-        camera.cameraPosition = glm::vec3(0.0f, 0.0f, -15.0f);
+        camera.cameraPosition = glm::vec3(0.0f, 0.0f, -12.0f);
         camera.targetPosition = glm::vec3(0.0f, 0.0f, 0.0f);
         camera.upVector = glm::vec3(0.0f, -1.0f, 0.0f);  // Mira hacia abajo porque el modelo está al revés
 
