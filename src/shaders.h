@@ -40,7 +40,7 @@ std::vector<std::vector<Vertex>> primitiveAssembly (
     return groupedVertices;
 }
 
-Color fragmentShader(Fragment fragment) {
-    return fragment.color;
-//    return Color{255, 255, 255, 255};
-};
+Fragment fragmentShader(Fragment fragment) {
+    fragment.color = fragment.color * fragment.intensity;
+    return fragment;
+}

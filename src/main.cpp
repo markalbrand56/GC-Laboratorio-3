@@ -49,8 +49,7 @@ void render(const std::vector<glm::vec3>& vertices) {
     // Fragments -> colors
 
     for (Fragment fragment : fragments) {
-        Color fragColor = fragmentShader(fragment);
-        point(fragment);
+        point(fragmentShader(fragment));
     }
 }
 

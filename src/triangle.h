@@ -1,6 +1,8 @@
 #pragma once
 #include "gl.h"
 
+glm::vec3 lightPos = glm::vec3(100.0f, 0, 250.0f);
+
 glm::vec3 barycentricCoordinates(const glm::vec3& P, const glm::vec3& A, const glm::vec3& B, const glm::vec3& C) {
     glm::vec3 s[2];
     for (int i = 0; i < 2; i++) {
@@ -26,8 +28,10 @@ std::vector<Fragment> triangle(const Vertex& a, const Vertex& b, const Vertex& c
     float maxX = std::max(std::max(A.x, B.x), C.x);
     float maxY = std::max(std::max(A.y, B.y), C.y);
 
-    std::vector<Fragment> fragments;
+    // Calculate the normal
+    glm::vec3 normal = glm::normalize(glm::cross(B - A, C - A));
 
+    std::vector<Fragment> fragments;
     // Iterate over each point in the bounding box
     for (float y = minY; y <= maxY; ++y) {
         for (float x = minX; x <= maxX; ++x) {
@@ -47,8 +51,10 @@ std::vector<Fragment> triangle(const Vertex& a, const Vertex& b, const Vertex& c
 
                 P.z = barycentric.x * a.position.z + barycentric.y * b.position.z + barycentric.z * c.position.z;
 
+                float intensity = glm::dot(normal, glm::normalize(lightPos - P));
+
                 // Add the point to the fragment list
-                fragments.push_back(Fragment{P, color});
+                fragments.push_back(Fragment{P, color, intensity});
             }
         }
     }
