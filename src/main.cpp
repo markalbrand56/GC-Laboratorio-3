@@ -87,16 +87,6 @@ int main(int argc, char** argv) {
 
     std::vector<glm::vec3> vertexBufferObject = setupVertexFromObject(vertices, faces);
 
-//    std::vector<glm::vec3> vertexBufferObject = {
-//            {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f},
-//            {-0.87f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f},
-//            {0.87f,  -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f},
-//
-//            {0.0f, 1.0f,    -1.0f}, {0.0f, 1.0f, 0.0f},
-//            {-0.87f, -0.5f, -1.0f}, {0.0f, 1.0f, 0.0f},
-//            {0.87f,  -0.5f, -1.0f}, {0.0f, 1.0f, 0.0f}
-//    };
-
     bool running = true;
     while (running) {
         SDL_Event event;
