@@ -46,7 +46,8 @@ std::vector<Fragment> triangle(const Vertex& a, const Vertex& b, const Vertex& c
                 float z = A.z * barycentric.x + B.z * barycentric.y + C.z * barycentric.z;
 
                 // Calculate the intensity
-                glm::vec3 lightDir = glm::normalize(lightPos - P);
+//                glm::vec3 lightDir = glm::normalize(lightPos - P);  // Otro tipo de luz
+                glm::vec3 lightDir = glm::normalize(lightPos - a.position);  // Flat shading
                 float intensity = glm::dot(normal, lightDir);
 
                 // Create the fragment
