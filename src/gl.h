@@ -23,6 +23,7 @@ const int SCREEN_HEIGHT = 480;
 Color currentColor = {255, 255, 255, 255}; // Initially set to white
 Color clearColor = {0, 0, 0, 255}; // Initially set to black
 std::array<std::array<float, SCREEN_WIDTH>, SCREEN_HEIGHT> zbuffer;
+std::array<std::array<float, SCREEN_WIDTH>, SCREEN_HEIGHT> zbufferToPrint;
 
 
 void init() {
@@ -53,6 +54,8 @@ void point(Fragment f) {
         SDL_SetRenderDrawColor(renderer, f.color.r, f.color.g, f.color.b, f.color.a);
         SDL_RenderDrawPoint(renderer, f.position.x, f.position.y);
         zbuffer[f.position.y][f.position.x] = f.position.z;
+        zbufferToPrint[f.position.y][f.position.x] = f.position.z;
+//        std::cout << zbuffer[f.position.y][f.position.x] << std::endl;
     }
 }
 

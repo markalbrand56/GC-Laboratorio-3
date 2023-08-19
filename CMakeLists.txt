@@ -18,6 +18,7 @@ add_executable(Laboratorio_3 src/main.cpp
         src/shaders.h
         src/camera.h
         src/object.h
-        src/triangle.h)
+        src/triangle.h
+        src/bmp_writer.h)
 
 target_link_libraries(${PROJECT_NAME} SDL2main SDL2 glm::glm)

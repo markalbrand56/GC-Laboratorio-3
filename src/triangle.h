@@ -28,6 +28,12 @@ std::vector<Fragment> triangle(const Vertex& a, const Vertex& b, const Vertex& c
     float maxX = std::max(std::max(A.x, B.x), C.x);
     float maxY = std::max(std::max(A.y, B.y), C.y);
 
+    // Cast to int
+    minX = std::floor(minX);
+    minY = std::floor(minY);
+    maxX = std::ceil(maxX);
+    maxY = std::ceil(maxY);
+
     // Calculate the normal
     glm::vec3 normal = glm::normalize(glm::cross(B - A, C - A));
 
@@ -44,9 +50,10 @@ std::vector<Fragment> triangle(const Vertex& a, const Vertex& b, const Vertex& c
             if (barycentric.x >= 0 && barycentric.y >= 0 && barycentric.z >= 0) {
                 // Calculate the depth
                 float z = A.z * barycentric.x + B.z * barycentric.y + C.z * barycentric.z;
+//                std::cout << z << std::endl;
 
                 // Calculate the intensity
-//                glm::vec3 lightDir = glm::normalize(lightPos - P);  // Otro tipo de luz
+                // glm::vec3 lightDir = glm::normalize(lightPos - P);  // Otro tipo de luz
                 glm::vec3 lightDir = glm::normalize(lightPos - a.position);  // Flat shading
                 float intensity = glm::dot(normal, lightDir);
 

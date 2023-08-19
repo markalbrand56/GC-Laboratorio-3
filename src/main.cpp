@@ -5,6 +5,7 @@
 #include "shaders.h"
 #include "object.h"
 #include "triangle.h"
+#include"bmp_writer.h"
 
 Uniforms uniform;
 Camera camera;
@@ -120,6 +121,9 @@ int main(int argc, char** argv) {
         // Render
         render(vertexBufferObject);
 
+        // Save the frame buffer to a BMP file
+
+
         // Present the frame buffer to the screen
         SDL_RenderPresent(renderer);
 
@@ -127,6 +131,7 @@ int main(int argc, char** argv) {
         SDL_Delay(1000 / 60);
     }
 
+    writeBMP("output2.bmp");
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
