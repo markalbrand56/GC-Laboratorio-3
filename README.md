@@ -17,3 +17,5 @@
 
 ### Z Buffer a BMP
 ![Z-buffer](https://github.com/markalbrand56/GC-Laboratorio-3/blob/parte-2/model/Z%20buffer.png)
+
+[Archivo BMP](https://github.com/markalbrand56/GC-Laboratorio-3/blob/parte-2/model/output2.bmp)
